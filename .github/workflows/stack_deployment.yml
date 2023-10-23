@@ -15,11 +15,9 @@ on:
       file:
         required: true
         type: string
+    secrets:
       environment:
         required: false
-        type: string
-        default: ""
-    secrets:
       DEPLOYMENT_TOKEN:
         required: true
 
@@ -41,7 +39,7 @@ jobs:
                     "repository": "${{ inputs.repository }}",
                     "branch": "${{ inputs.branch }}",
                     "file": "${{ inputs.file }}",
-                    "environment": "${{ inputs.environment }}"
+                    "environment": "${{ secrets.environment }}"
                 }
             }
         env:
