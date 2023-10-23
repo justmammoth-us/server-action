@@ -52,20 +52,8 @@ jobs:
       #     data: ${{ toJSON(env.REQUEST_BODY) }}
 
       - name: Trigger deployment backend
-        env:
-          REQUEST_BODY: |
-            {
-                "ref": "main",
-                "inputs": {
-                    "name": "${{ inputs.name }}",
-                    "repository": "${{ inputs.repository }}",
-                    "branch": "${{ inputs.branch }}",
-                    "file": "${{ inputs.file }}",
-                    "environment": "${{ secrets.environment }}"
-                }
-            }
         run: |
           curl --location 'https://api.github.com/repos/${{ env.backend_owner }}/${{ env.backend_repository }}/actions/workflows/${{ env.backend_workflow }}/dispatches' \
           --header 'Content-Type: application/json' \
           --header 'Authorization: Bearer ${{ secrets.DEPLOYMENT_TOKEN }}' \
-          --data ${{ toJSON(env.REQUEST_BODY) }}
+          --data '{"ref":"${{ env.backend_branch }}","inputs":{"name":"${{ inputs.name }}","repository":"${{ inputs.repository }}","branch":"${{ inputs.branch }}","file":"${{ inputs.file }}","environment":"${{ secrets.environment }}"}}'
