@@ -1,0 +1,48 @@
+name: Trigger deployment
+
+on:
+  workflow_call:
+    inputs:
+      name:
+        required: true
+        type: string
+      repository:
+        required: true
+        type: string
+      branch:
+        required: true
+        type: string
+      file:
+        required: true
+        type: string
+      environment:
+        required: false
+        type: string
+        default: ""
+    secrets:
+      DEPLOYMENT_TOKEN:
+        required: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: octokit/request-action@v2.1
+        with:
+          route: GET /repos/{owner}/{repo}/actions/workflows/{workflow}/dispatches
+          owner: justmammoth-us
+          repo: server-deployment
+          workflow: stack_deployment.yml
+          body: |
+            {
+                "ref": "main",
+                "inputs": {
+                    "name": "${{ inputs.name }}",
+                    "repository": "${{ inputs.repository }}",
+                    "branch": "${{ inputs.branch }}",
+                    "file": "${{ inputs.file }}",
+                    "environment": "${{ inputs.environment }}"
+                }
+            }
+        env:
+          GITHUB_TOKEN: ${{ secrets.DEPLOYMENT_TOKEN }}
