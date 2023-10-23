@@ -30,51 +30,30 @@ jobs:
       backend_branch: main
       backend_workflow: stack_deployment.yml
     steps:
-      - uses: octokit/request-action@v2.1.9
-        env:
-          GITHUB_TOKEN: ${{ secrets.DEPLOYMENT_TOKEN }}
-          REQUEST_BODY: |
-            {
-                "ref": "main",
-                "inputs": {
-                    "name": "${{ inputs.name }}",
-                    "repository": "${{ inputs.repository }}",
-                    "branch": "${{ inputs.branch }}",
-                    "file": "${{ inputs.file }}",
-                    "environment": "${{ secrets.environment }}"
-                }
-            }
-        with:
-          route: POST /repos/{owner}/{repo}/actions/workflows/{workflow}/dispatches
-          owner: justmammoth-us
-          repo: server-deployment
-          workflow: stack_deployment.yml
-          body: ${{ toJSON(env.REQUEST_BODY) }}
-      # - name: Trigger deployment backend
-      #   uses: fjogeleit/http-request-action@v1
-      #   with:
-      #     url: https://api.github.com/repos/${{ env.backend_owner }}/${{ env.backend_repository }}/actions/workflows/${{ env.backend_workflow }}/dispatches
-      #     method: POST
-      #     contentType: application/json
-      #     bearerToken: ${{ secrets.DEPLOYMENT_TOKEN }}
-      #     data: |
+      # - uses: octokit/request-action@v2.1.9
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.DEPLOYMENT_TOKEN }}
+      #     REQUEST_BODY: |
       #       {
-      #         "ref": "${{ env.backend_branch }}",
-      #         "inputs":
-      #           {
-      #             "name": "${{ inputs.name }}",
-      #             "repository": "${{ inputs.repository }}",
-      #             "branch": "${{ inputs.branch }}",
-      #             "file": "${{ inputs.file }}",
-      #             "environment": "${{ secrets.environment }}",
-      #           },
+      #           "ref": "main",
+      #           "inputs": {
+      #               "name": "${{ inputs.name }}",
+      #               "repository": "${{ inputs.repository }}",
+      #               "branch": "${{ inputs.branch }}",
+      #               "file": "${{ inputs.file }}",
+      #               "environment": "${{ secrets.environment }}"
+      #           }
       #       }
+      #   with:
+      #     route: POST /repos/{owner}/{repo}/actions/workflows/{workflow}/dispatches
+      #     owner: justmammoth-us
+      #     repo: server-deployment
+      #     workflow: stack_deployment.yml
+      #     data: ${{ toJSON(env.REQUEST_BODY) }}
 
-      # - name: Trigger deployment backend
-      #   run: |
-      #     curl --location 'https://api.github.com/repos/${{ env.backend_owner }}/${{ env.backend_repository }}/actions/workflows/${{ env.backend_workflow }}/dispatches' \
-      #     --header 'Accept: application/vnd.github+json' \
-      #     --header 'X-GitHub-Api-Version: 2022-11-28' \
-      #     --header 'Content-Type: application/json' \
-      #     --header 'Authorization: Bearer ${{ secrets.DEPLOYMENT_TOKEN }}' \
-      #     --data '{"ref":"${{ env.backend_branch }}","inputs":{"name":"${{ inputs.name }}","repository":"${{ inputs.repository }}","branch":"${{ inputs.branch }}","file":"${{ inputs.file }}","environment":"${{ secrets.environment }}"}}'
+      - name: Trigger deployment backend
+        run: |
+          curl --location 'https://api.github.com/repos/${{ env.backend_owner }}/${{ env.backend_repository }}/actions/workflows/${{ env.backend_workflow }}/dispatches' \
+          --header 'Content-Type: application/json' \
+          --header 'Authorization: Bearer ${{ secrets.DEPLOYMENT_TOKEN }}' \
+          --data '{"ref":"${{ env.backend_branch }}","inputs":{"name":"${{ inputs.name }}","repository":"${{ inputs.repository }}","branch":"${{ inputs.branch }}","file":"${{ inputs.file }}","environment":"${{ secrets.environment }}"}}'
