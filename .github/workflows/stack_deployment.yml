@@ -30,27 +30,6 @@ jobs:
       backend_branch: main
       backend_workflow: stack_deployment.yml
     steps:
-      # - uses: octokit/request-action@v2.1.9
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.DEPLOYMENT_TOKEN }}
-      #     REQUEST_BODY: |
-      #       {
-      #           "ref": "main",
-      #           "inputs": {
-      #               "name": "${{ inputs.name }}",
-      #               "repository": "${{ inputs.repository }}",
-      #               "branch": "${{ inputs.branch }}",
-      #               "file": "${{ inputs.file }}",
-      #               "environment": "${{ secrets.environment }}"
-      #           }
-      #       }
-      #   with:
-      #     route: POST /repos/{owner}/{repo}/actions/workflows/{workflow}/dispatches
-      #     owner: justmammoth-us
-      #     repo: server-deployment
-      #     workflow: stack_deployment.yml
-      #     data: ${{ toJSON(env.REQUEST_BODY) }}
-
       - name: Trigger deployment backend
         run: |
           curl --location 'https://api.github.com/repos/${{ env.backend_owner }}/${{ env.backend_repository }}/actions/workflows/${{ env.backend_workflow }}/dispatches' \
