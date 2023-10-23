@@ -31,12 +31,9 @@ jobs:
       backend_workflow: stack_deployment.yml
     steps:
       - uses: octokit/request-action@v2.1.9
-        with:
-          route: POST /repos/{owner}/{repo}/actions/workflows/{workflow}/dispatches
-          owner: justmammoth-us
-          repo: server-deployment
-          workflow: stack_deployment.yml
-          body: |
+        env:
+          GITHUB_TOKEN: ${{ secrets.DEPLOYMENT_TOKEN }}
+          REQUEST_BODY: |
             {
                 "ref": "main",
                 "inputs": {
@@ -47,8 +44,12 @@ jobs:
                     "environment": "${{ secrets.environment }}"
                 }
             }
-        env:
-          GITHUB_TOKEN: ${{ secrets.DEPLOYMENT_TOKEN }}
+        with:
+          route: POST /repos/{owner}/{repo}/actions/workflows/{workflow}/dispatches
+          owner: justmammoth-us
+          repo: server-deployment
+          workflow: stack_deployment.yml
+          body: ${{ toJSON(env.REQUEST_BODY) }}
       # - name: Trigger deployment backend
       #   uses: fjogeleit/http-request-action@v1
       #   with:
