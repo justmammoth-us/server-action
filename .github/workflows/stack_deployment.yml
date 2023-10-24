@@ -48,8 +48,9 @@ jobs:
              }
           }
           EOL
-          hjson -j body.hjson > body.json
+          hjson -c body.hjson > body.json
           hjson --help
+          cat body.json
       # - name: Trigger deployment backend
       #   run: |
       #     curl --location 'https://api.github.com/repos/${{ env.backend_owner }}/${{ env.backend_repository }}/actions/workflows/${{ env.backend_workflow }}/dispatches' \
