@@ -53,7 +53,8 @@ jobs:
 
       - name: Trigger deployment backend
         run: |
-          curl --location 'https://api.github.com/repos/${{ env.backend_owner }}/${{ env.backend_repository }}/actions/workflows/${{ env.backend_workflow }}/dispatches' \
+          WORKFLOW_URL=https://api.github.com/repos/${{ env.backend_owner }}/${{ env.backend_repository }}/actions/workflows/${{ env.backend_workflow }}/dispatches
+          curl --location $WORKFLOW_URL \
           --header 'Content-Type: application/json' \
           --header 'Authorization: Bearer ${{ secrets.DEPLOYMENT_TOKEN }}' \
-          --data '$( cat body.json )'
+          --data "$( cat body.json )"
