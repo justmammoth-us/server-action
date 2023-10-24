@@ -30,9 +30,29 @@ jobs:
       backend_branch: main
       backend_workflow: stack_deployment.yml
     steps:
-      - name: Trigger deployment backend
+      - name: Install HJSON
         run: |
-          curl --location 'https://api.github.com/repos/${{ env.backend_owner }}/${{ env.backend_repository }}/actions/workflows/${{ env.backend_workflow }}/dispatches' \
-          --header 'Content-Type: application/json' \
-          --header 'Authorization: Bearer ${{ secrets.DEPLOYMENT_TOKEN }}' \
-          --data '{"ref":"${{ env.backend_branch }}","inputs":{"name":"${{ inputs.name }}","repository":"${{ inputs.repository }}","branch":"${{ inputs.branch }}","file":"${{ inputs.file }}","environment":"${{ secrets.environment }}"}}'
+          PKG=https://github.com/hjson/hjson-go/releases/download/v4.3.1/hjson_v4.3.1_linux_amd64.tar.gz
+          curl -sSL $PKG | sudo tar -xz -C /usr/local/bin
+      - name: Build json body
+        run: |
+          cat > body.hjson << EOL
+          {
+             "ref":"${{ env.backend_branch }}",
+             "inputs":{
+                "name":"${{ inputs.name }}",
+                "repository":"${{ inputs.repository }}",
+                "branch":"${{ inputs.branch }}",
+                "file":"${{ inputs.file }}",
+                "environment":'''${{ secrets.environment }}'''
+             }
+          }
+          EOL
+          hjson -j body.hjson > body.json
+          cat body.json
+      #- name: Trigger deployment backend
+      #  run: |
+      #    curl --location 'https://api.github.com/repos/${{ env.backend_owner }}/${{ env.backend_repository }}/actions/workflows/${{ env.backend_workflow }}/dispatches' \
+      #    --header 'Content-Type: application/json' \
+      #    --header 'Authorization: Bearer ${{ secrets.DEPLOYMENT_TOKEN }}' \
+      #    --data '{"ref":"${{ env.backend_branch }}","inputs":{"name":"${{ inputs.name }}","repository":"${{ inputs.repository }}","branch":"${{ inputs.branch }}","file":"${{ inputs.file }}","environment":"${{ secrets.environment }}"}}'
