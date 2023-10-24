@@ -49,10 +49,10 @@ jobs:
           }
           EOL
           hjson -j body.hjson > body.json
-          cat body.json
-      #- name: Trigger deployment backend
-      #  run: |
-      #    curl --location 'https://api.github.com/repos/${{ env.backend_owner }}/${{ env.backend_repository }}/actions/workflows/${{ env.backend_workflow }}/dispatches' \
-      #    --header 'Content-Type: application/json' \
-      #    --header 'Authorization: Bearer ${{ secrets.DEPLOYMENT_TOKEN }}' \
-      #    --data '{"ref":"${{ env.backend_branch }}","inputs":{"name":"${{ inputs.name }}","repository":"${{ inputs.repository }}","branch":"${{ inputs.branch }}","file":"${{ inputs.file }}","environment":"${{ secrets.environment }}"}}'
+          hjson --help
+      # - name: Trigger deployment backend
+      #   run: |
+      #     curl --location 'https://api.github.com/repos/${{ env.backend_owner }}/${{ env.backend_repository }}/actions/workflows/${{ env.backend_workflow }}/dispatches' \
+      #     --header 'Content-Type: application/json' \
+      #     --header 'Authorization: Bearer ${{ secrets.DEPLOYMENT_TOKEN }}' \
+      #     --data 
