@@ -58,7 +58,7 @@ jobs:
           STATUSCODE=$(curl --location $WORKFLOW_URL \
           --header 'Content-Type: application/json' \
           --header 'Authorization: Bearer ${{ secrets.DEPLOYMENT_TOKEN }}' \
-          --data "$( cat body.json )")
+          --data $( cat body.json ))
 
           if test $STATUSCODE -ne 200; then
             exit 1
